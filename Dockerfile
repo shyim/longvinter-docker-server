@@ -1,50 +1,22 @@
-FROM debian:buster-slim
+FROM steamcmd/steamcmd:ubuntu-24
 
-# Install necessary linux packages
-RUN apt-get update && \
-    apt-get install --no-install-recommends --no-install-suggests -y \
-      git \
-      git-lfs  \
-      wget \
-      ca-certificates \
-      lib32gcc1
+ENV CFG_SERVER_NAME="Unnamed Island" \
+    CFG_MAX_PLAYERS="32" \
+    CFG_SERVER_MOTD="Welcome to Longvinter Island!" \
+    CFG_PASSWORD="" \
+    CFG_COMMUNITY_WEBSITE="www.longvinter.com" \
+    CFG_ADMIN_STEAM_ID="" \
+    CFG_ENABLE_PVP="true" \
+    CFG_TENT_DECAY="true" \
+    CFG_MAX_TENTS="2" \
+    CFG_GAME_PORT="7777" \
+    CFG_QUERY_PORT="27016"
 
-# Steam user variables  
-ENV UID 1000
-ENV USER steam
-ENV HOME /home/$USER
-
-# Create the steam user and data directory
-RUN adduser --disabled-password --gecos '' -u $UID $USER && \
-    mkdir -p /data
-
-# Copy all necessary scripts
-WORKDIR $HOME
-COPY run.sh .
-
-# Set scripts as executable and set ownership of home/data directories
-RUN chmod +x run.sh && \
-    chown -R $USER:$USER /home/$USER && \
-    chown -R $USER:$USER /data
-
-# Install the SteamCMD as the steam user
-USER steam
-WORKDIR $HOME
-RUN mkdir -p steamcmd && cd steamcmd && \
-    wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz && \
-    tar -xvzf steamcmd_linux.tar.gz && \
-    rm steamcmd_linux.tar.gz
-
-# Install the Steam SDK
-WORKDIR $HOME/steamcmd
-RUN ./steamcmd.sh +force_install_dir . +login anonymous +app_update 1007 +quit
-
-# Link 64-bit binaries (this may not even be necessary?)
-RUN mkdir -p $HOME/.steam/sdk64 && \
-    ln -s $HOME/steamcmd/linux64/steamclient.so $HOME/.steam/sdk64/
-
-WORKDIR $HOME
+VOLUME /data
 EXPOSE 7777 27016
+WORKDIR /data
 
-ENTRYPOINT ["/bin/bash"]
-CMD ["./run.sh"]
+COPY run.sh /run.sh
+
+ENTRYPOINT []
+CMD ["/run.sh"]
