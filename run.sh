@@ -5,10 +5,10 @@ set -eo pipefail
 cd /data
 
 if [ ! -f "/data/LongvinterServer.sh" ]; then
-    chown -R 1000:1000 /data
+    chown -R steam:steam /data
 fi
 
-su ubuntu steamcmd +force_install_dir /data +login anonymous +app_update 1639880 +quit
+su steam /home/steam/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 1639880 +quit
 
 echo "Setting config variables..."
 echo "[/Game/Blueprints/Server/GI_AdvancedSessions.GI_AdvancedSessions_C]" > /data/Longvinter/Saved/Config/LinuxServer/Game.ini
@@ -26,4 +26,4 @@ echo "MaxTents=$CFG_MAX_TENTS" >> /data/Longvinter/Saved/Config/LinuxServer/Game
 chown 1000:1000 /data/Longvinter/Saved/Config/LinuxServer/Game.ini
 
 echo "Setup done, starting the server..."
-exec su ubuntu -- "/data/LongvinterServer.sh" -Port=$CFG_GAME_PORT -QueryPort=$CFG_QUERY_PORT
+exec su steam -- "/data/LongvinterServer.sh" -Port=$CFG_GAME_PORT -QueryPort=$CFG_QUERY_PORT

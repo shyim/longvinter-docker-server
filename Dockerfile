@@ -1,4 +1,5 @@
-FROM steamcmd/steamcmd:ubuntu-24
+ARG BASE_IMAGE=cm2network/steamcmd:root
+FROM ${BASE_IMAGE}
 
 ENV CFG_SERVER_NAME="Unnamed Island" \
     CFG_MAX_PLAYERS="32" \
@@ -17,6 +18,7 @@ EXPOSE 7777 27016
 WORKDIR /data
 
 COPY run.sh /run.sh
+RUN chsh -s /bin/bash steam
 
 ENTRYPOINT []
 CMD ["/run.sh"]
