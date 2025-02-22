@@ -13,6 +13,7 @@ jobs:
                 arch: amd64
                 base: cm2network/steamcmd:root
               - runner: ubuntu-24.04-arm
+                arch: arm64
                 base: ghcr.io/sonroyaalmerol/steamcmd-arm64:root
     runs-on: ${{ matrix.runner }}
     permissions:
@@ -37,8 +38,11 @@ jobs:
         with:
           context: .
           push: true
+          build-args: |
+            BASE_IMAGE=${{ matrix.base }}
           tags: |
-              ghcr.io/${{ github.repository }}:${{ matrix.arch }}
+            ghcr.io/${{ github.repository }}:${{ matrix.arch }}
+          
           provenance: false
   merge:
     runs-on: ubuntu-24.04
